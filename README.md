@@ -37,7 +37,10 @@ sudo apt install -y pgadmin4-web
 
 # Run pgAdmin web setup
 sudo /usr/pgadmin4/bin/setup-web.sh
+---
+pip install psycopg2
 
+```bash
 uvicorn app.main:app --reload
 
-
+5
