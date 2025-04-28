@@ -43,4 +43,4 @@ pip install psycopg2
 ```bash
 uvicorn app.main:app --reload
 
-5
+sudo systemctl enable postgresql
