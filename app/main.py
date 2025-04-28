@@ -6,7 +6,7 @@ from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-from . import models
+from . import models, schemas
 from .database import engine, get_db
 from sqlalchemy.orm import Session  
 
@@ -63,22 +63,18 @@ def find_index_post(id):
 def root():
     return {"message": "Welcome to my api !!!!"}  
 
-@app.get("/sqlalchemy")
-def test_post(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all()
 
-    return {"data": posts} 
 
 @app.get("/posts")
 def get_post():
-    cursor.execute("""SELECT * FROM post""")
+    cursor.execute("""SELECT * FROM posts""")
     posts = cursor.fetchall()
     print(posts)
-    return {"data": posts }    
+    return posts 
 
 
-@app.post("/posts",status_code=status.HTTP_201_CREATED)
-def create_post(post: Post, db: Session = Depends(get_db)):
+@app.post("/posts",status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     # cursor.execute("""INSERT INTO post (title, content, published) VALUES (%s, %s, %s) RETURNING *""",
     #                (post.title, post.content, post.published))
     # new_post = cursor.fetchone()
@@ -86,7 +82,7 @@ def create_post(post: Post, db: Session = Depends(get_db)):
     new_post = models.Post(**post.dict())
     db.add(new_post)    
     db.commit()
-    return {"data": new_post }
+    return new_post 
 
 @app.get("/posts/latest")
 def get_latest_post():
@@ -120,7 +116,7 @@ def delete_post(id:int,db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @app.put("/posts/{id}")
-def update_post(id:int, updated_post: Post,db: Session = Depends(get_db)):
+def update_post(id:int, updated_post: schemas.PostCreate,db: Session = Depends(get_db)):
     # cursor.execute("""UPDATE post SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *""",
     #                (post.title, post.content, post.published, str(id)))
     # updated_post = cursor.fetchone()
@@ -132,5 +128,5 @@ def update_post(id:int, updated_post: Post,db: Session = Depends(get_db)):
                             detail=f"post with id {id} does not exist")
     post_query.update(updated_post.dict(), synchronize_session=False)
     db.commit()
-    return {"data": post_query.first()}
+    return post_query.first()
 
