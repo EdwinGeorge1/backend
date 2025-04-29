@@ -52,3 +52,8 @@ username
 password
 Sequrity : Hashing Password 
 
+JWT Token Authentication
+
+HEAder
+PAYload
+Verify Signature
