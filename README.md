@@ -44,3 +44,11 @@ pip install psycopg2
 uvicorn app.main:app --reload
 
 sudo systemctl enable postgresql
+
+
+
+
+username 
+password
+Sequrity : Hashing Password 
+
