@@ -4,8 +4,13 @@ from sqlalchemy.orm import sessionmaker
 from psycopg2.extras import RealDictCursor
 import psycopg2
 import time
+from .config import Settings
+settings = Settings()
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:4321@localhost:5432/fastapi"
+SQLALCHEMY_DATABASE_URL = (
+    f"postgresql://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}"
+    f"@{settings.DATABASE_HOST}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}"
+)
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
